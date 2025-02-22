@@ -1,6 +1,3 @@
-Uhh
-just install node and run src/main.js and pass in as the first argument the file name of the source code you want to run:
+the script can be used to run mercury script files:
 
-node src/main.js tests/factorial.mc
-
-good look because theres no position in the errors, i tried my best with the parsing errors.
+./mercury.sh path/to/script.mc
