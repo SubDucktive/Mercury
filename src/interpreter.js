@@ -1,6 +1,11 @@
 const { Enviornment } = require("./enviornment");
 const { NumberValue, NullValue, StringValue, ArrayValue, FunctionValue, ReturnValue } = require("./runtimevalues");
 
+function invalidReturn() {
+    console.log(`Error: Invalid Return Statement`)
+    process.exit(1)
+}
+
 function stringify(value, quoteStrings=false) {
     switch (value.type) {
         case "Number":
@@ -29,7 +34,7 @@ function stringify(value, quoteStrings=false) {
     }
 }
 
-function evaluate(node, env) {
+function evaluate(node, env, inFunction=false) {
     switch (node.type) {
         case "Program": {
             let lastEvaluated = new NullValue()
@@ -46,6 +51,9 @@ function evaluate(node, env) {
 
         case "StringLiteral":
             return new StringValue(node.value)
+
+        case "NullLiteral":
+            return new NullValue()
 
         case "BinaryExpression": {
             let lhs = evaluate(node.left, env) 
@@ -148,22 +156,28 @@ function evaluate(node, env) {
 
             let lastEvaluated = new NullValue
             for (const statement of node.body) {
-                lastEvaluated = evaluate(statement, blockEnv)
+                lastEvaluated = evaluate(statement, blockEnv, inFunction)
 
                 if (lastEvaluated instanceof ReturnValue) {
-                    return lastEvaluated
+                    if (inFunction) {
+                        return lastEvaluated
+                    } else {
+                        invalidReturn()
+                    }
                 }
             }
-
-            return lastEvaluated
+            if (inFunction) {
+                return lastEvaluated
+            }
+            break
         }
 
         case "IfStatement": {
             let result;
             if (evaluate(node.test, env).value) {
-                result = evaluate(node.consequent, env)
+                result = evaluate(node.consequent, env, inFunction)
             } else if (node.alternate) {
-                result = evaluate(node.alternate, env)
+                result = evaluate(node.alternate, env, inFunction)
             }
             
             return result
@@ -171,8 +185,8 @@ function evaluate(node, env) {
 
         case "WhileStatement": {
             let result;
-            while (evaluate(node.test, env).value) {
-                result = evaluate(node.body, env)
+            while (evaluate(node.test, env, inFunction).value) {
+                result = evaluate(node.body, env, inFunction)
                 if (result instanceof ReturnValue) {
                     return result
                 }
@@ -274,13 +288,12 @@ function evaluate(node, env) {
                 // Now evaluate the function body using the new scope
                 let lastEvaluated = new NullValue()
                 for (const statement of callee.body) {
-                    lastEvaluated = evaluate(statement, funcEnv)
+                    lastEvaluated = evaluate(statement, funcEnv, true)
 
                     if (lastEvaluated instanceof ReturnValue) {
                         return lastEvaluated.value
                     }
                 }
-        
                 return lastEvaluated  // Return the result of the function body
         
             }
@@ -296,8 +309,7 @@ function evaluate(node, env) {
 
         case "ReturnStatement": {
             if (!env.parent) {
-                console.log("Cant return from global scoped code")
-                process.exit(1)
+                invalidReturn()
             }
             return new ReturnValue(evaluate(node.argument, env))
         }

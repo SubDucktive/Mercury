@@ -21,7 +21,7 @@ class StringValue extends RuntimeValue {
 class NullValue extends RuntimeValue {
     constructor() {
         super("Null")
-        this.value = "Null"
+        this.value = "null"
     }
 }
 

@@ -1,4 +1,4 @@
-const { NullValue, NativeFunctionValue, StringValue } = require("./runtimevalues")
+const { NativeFunctionValue, StringValue } = require("./runtimevalues")
 
 class Variable {
     constructor(name, value, kind="let") {
@@ -8,12 +8,10 @@ class Variable {
     }
 }
 
-function makeGlobalEnv() {
+function CreateGlobalEnv() {
     let env = new Enviornment()
 
     // Global vars
-    env.declareVar("null", new NullValue(), "const")
-
     env.declareVar("typeof", new NativeFunctionValue((args) => {
         if (args.length != 1) {
             console.log("Error: typeof function expects one argument");
@@ -96,4 +94,4 @@ class Enviornment {
     }
 }
 
-module.exports = { Enviornment, Variable, makeGlobalEnv }
+module.exports = { Enviornment, Variable, CreateGlobalEnv }

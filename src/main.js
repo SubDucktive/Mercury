@@ -1,7 +1,7 @@
 const fs = require('fs')
 const { Parser } = require("./parser")
 const { evaluate } = require("./interpreter")
-const { makeGlobalEnv } = require('./enviornment')
+const { CreateGlobalEnv } = require('./enviornment')
 
 if (process.argv.length - 2 == 0) {
     console.log("REPL mode not implemeneted yet.")
@@ -21,7 +21,7 @@ if (process.argv.length - 2 == 0) {
 
     //console.log(JSON.stringify(ast, null, 4))
 
-    let env = makeGlobalEnv()
+    let env = CreateGlobalEnv()
 
     evaluate(ast, env)
 } else {

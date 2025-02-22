@@ -72,7 +72,7 @@ class Parser {
 
         if (this.peek().type == TokenType.semi) {
             this.eat()
-            return new VariableDeclaration("let", new Identifier(identifier.value), new Identifier("null"))
+            return new VariableDeclaration("let", new Identifier(identifier.value), new NullLiteral())
         } else if (this.peek().type == TokenType.equals) {
             this.eat()
             let expr = this.parseExpression()
@@ -378,6 +378,9 @@ class Parser {
         switch (token.type) {
             case TokenType.number:
                 return new NumericLiteral(this.eat().value)
+
+            case TokenType._null:
+                return new NullLiteral(this.eat().value)
             
             case TokenType.identifier:
                 return new Identifier(this.eat().value)

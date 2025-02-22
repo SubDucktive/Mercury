@@ -59,6 +59,7 @@ const TokenType = {
     _func: "func",
     _return: "return",
 
+    _null: "null",
     //eof
     EOF:        "EOF"
 }
@@ -249,6 +250,10 @@ class Lexer {
 
                     case "return":
                         this.tokens.push(new Token(TokenType._return, symbol))
+                        break
+
+                    case "null":
+                        this.tokens.push(new Token(TokenType._null, symbol))
                         break
 
                     default:
