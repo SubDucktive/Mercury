@@ -11,6 +11,9 @@ if [ "$choice" != "y" ]; then
 fi
 
 echo "Installing Mercury.\n\n"
+
+npm install readline-sync --prefix /opt/mercury
+echo "Installed readling-sync (required for interpreter)"
  
 mkdir -p /opt/mercury/src
 echo "Created /opt/mercury"
