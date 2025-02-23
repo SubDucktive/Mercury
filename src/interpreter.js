@@ -6,7 +6,7 @@ function invalidReturn() {
     process.exit(1)
 }
 
-function stringify(value, quoteStrings=false) {
+function stringifyvalue(value, quoteStrings=false) {
     switch (value.type) {
         case "Number":
             return value.value.toString()
@@ -14,7 +14,7 @@ function stringify(value, quoteStrings=false) {
         case "Array": {
             let result = "[";
             for (let i = 0; i < value.elements.length; i++) {
-                result += stringify(value.elements[i],  true);  // Stringify each element
+                result += stringifyvalue(value.elements[i],  true);  // Stringify each element
                 if (i < value.elements.length - 1) {
                     result += ", ";  // Add a comma between elements, but not after the last one
                 }
@@ -147,7 +147,7 @@ function evaluate(node, env, inFunction=false) {
         }
 
         case "PrintStatement": {
-            console.log(stringify(evaluate(node.message, env)))
+            console.log(stringifyvalue(evaluate(node.message, env)))
             break
         }
 
@@ -321,4 +321,4 @@ function evaluate(node, env, inFunction=false) {
     }
 }
 
-module.exports = { evaluate }
+module.exports = { evaluate, stringifyvalue }
