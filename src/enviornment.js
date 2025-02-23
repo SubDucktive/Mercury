@@ -1,9 +1,10 @@
 const { NativeFunctionValue, StringValue, NumberValue, NullValue } = require("./runtimevalues")
 
-const readlineSync = require('readline-sync')
-
 // No matter what i did i couldn't import this from the other file so i just copy and pasted it
 // Fuck you javascript
+
+// Actually not you javascript
+// Fuck you node
 
 function stringifyvalue(value, quoteStrings=false) {
     switch (value.type) {
@@ -53,13 +54,13 @@ function CreateGlobalEnv() {
 
         return new StringValue(args[0].type)
     }), "const")
-
+    /*
     env.declareVar("input", new NativeFunctionValue((args) => {
         let userin = readlineSync.question(args[0].type == "String" ? args[0].value : '');
 
         return new StringValue(userin)
     }), "const")
-
+    */
     env.declareVar("len", new NativeFunctionValue((args) => {
         switch (args[0].type) {
             case "String": {

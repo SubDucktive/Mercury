@@ -154,20 +154,8 @@ function evaluate(node, env, inFunction=false) {
         case "BlockStatement": {
             let blockEnv = new Enviornment(env)
 
-            let lastEvaluated = new NullValue
             for (const statement of node.body) {
-                lastEvaluated = evaluate(statement, blockEnv, inFunction)
-
-                if (lastEvaluated instanceof ReturnValue) {
-                    if (inFunction) {
-                        return lastEvaluated
-                    } else {
-                        invalidReturn()
-                    }
-                }
-            }
-            if (inFunction) {
-                return lastEvaluated
+                evaluate(statement, blockEnv, inFunction)
             }
             break
         }
@@ -184,15 +172,10 @@ function evaluate(node, env, inFunction=false) {
         }
 
         case "WhileStatement": {
-            let result;
             while (evaluate(node.test, env, inFunction).value) {
-                result = evaluate(node.body, env, inFunction)
-                if (result instanceof ReturnValue) {
-                    return result
-                }
+                evaluate(node.body, env, inFunction)
             }
-
-            return result
+            break
         }
 
         case "FunctionDeclaration": {
@@ -288,10 +271,14 @@ function evaluate(node, env, inFunction=false) {
                 // Now evaluate the function body using the new scope
                 let lastEvaluated = new NullValue()
                 for (const statement of callee.body) {
-                    lastEvaluated = evaluate(statement, funcEnv, true)
-
-                    if (lastEvaluated instanceof ReturnValue) {
-                        return lastEvaluated.value
+                    try {
+                        lastEvaluated = evaluate(statement, funcEnv, true)
+                    } catch (err) {
+                        if (err instanceof ReturnValue) {
+                            return err.value
+                        } else {
+                            throw err
+                        }
                     }
                 }
                 return lastEvaluated  // Return the result of the function body
@@ -308,10 +295,10 @@ function evaluate(node, env, inFunction=false) {
         }
 
         case "ReturnStatement": {
-            if (!env.parent) {
+            if (!inFunction) {
                 invalidReturn()
             }
-            return new ReturnValue(evaluate(node.argument, env))
+            throw new ReturnValue(evaluate(node.argument, env))
         }
 
         default:
