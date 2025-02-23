@@ -7,8 +7,13 @@ if ! command -v node &> /dev/null; then
 fi
 
 if [ -z "$1" ]; then
-  echo "Usage: $0 <filename>"
+  echo "Usage: mercury <filename>"
   exit 1
 fi
 
-node src/main.js "$1"
+if [ ! -d "/opt/mercury" ]; then
+  echo "couldn't find mercury install directory, did you run the install script?"
+  exit 1
+fi
+
+node /opt/mercury/src/main.js "$1"
