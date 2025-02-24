@@ -3,7 +3,7 @@ function isNumeric(char) {
 }
 
 function isAlpha(char) {
-    return (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z')
+    return (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == "_";
 }
 
 function isAlphaNumeric(char) {

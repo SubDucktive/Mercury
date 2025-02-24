@@ -78,6 +78,34 @@ function CreateGlobalEnv() {
         }
     }), "const")
 
+    env.declareVar("pushvalue", new NativeFunctionValue((args) => {
+        if (args[0].type != "Array") {
+            console.log(`Error: cannot push to type '${args[0].type}'`)
+            process.exit(1)
+        }
+
+        if (!args[1]) {
+            console.log(`Error: missing second argument for push'`)
+            process.exit(1)
+        }
+
+        args[0].elements.push(args[1])
+        return args[1]
+    }), "const")
+
+    env.declareVar("popvalue", new NativeFunctionValue((args) => {
+        if (args[0].type != "Array") {
+            console.log(`Error: cannot call popvalue on type '${args[0].type}'`)
+            process.exit(1)
+        }
+
+        if (!args[0].elements.length) {
+            return new NullValue()
+        }
+
+        return args[0].elements.pop()
+    }))
+
     env.declareVar("String", new NativeFunctionValue((args) => {
         let result = stringifyvalue(args[0])
 
@@ -90,10 +118,74 @@ function CreateGlobalEnv() {
 
     env.declareVar("Number", new NativeFunctionValue((args) => {
         if (["String", "Number"].includes(args[0].type)) {
-            return new NumberValue(Number(args[0].value))
+            let result = new NumberValue(Number(args[0].value))
+            if (isNaN(result.value)) {
+                return new NullValue()
+            }
+            return result
         }
         return new NullValue
     }), "const")
+
+    // Math functions
+
+    env.declareVar("rand", new NativeFunctionValue(() => {
+        return new NumberValue(Math.random())
+    }))
+
+    env.declareVar("round", new NativeFunctionValue((args) => {
+        if (args[0].type != "Number") {
+            console.log(`Error: round function requires number`)
+            process.exit(1)
+        }
+
+        return new NumberValue(Math.round(args[0].value))
+    }))
+
+    env.declareVar("floor", new NativeFunctionValue((args) => {
+        if (args[0].type != "Number") {
+            console.log(`Error: floor function requires number`)
+            process.exit(1)
+        }
+
+        return new NumberValue(Math.floor(args[0].value))
+    }))
+
+    env.declareVar("ceil", new NativeFunctionValue((args) => {
+        if (args[0].type != "Number") {
+            console.log(`Error: ceil function requires number`)
+            process.exit(1)
+        }
+
+        return new NumberValue(Math.ceil(args[0].value))
+    }))
+
+    env.declareVar("sqrt", new NativeFunctionValue((args) => {
+        if (args[0].type != "Number") {
+            console.log(`Error: sqrt function requires number`)
+            process.exit(1)
+        }
+
+        return new NumberValue(Math.sqrt(args[0].value))
+    }))
+
+    env.declareVar("pow", new NativeFunctionValue((args) => {
+        if (args[0].type != "Number" || args[1].type != "Number") {
+            console.log(`Error: pow function requires 2 numbers`)
+            process.exit(1)
+        }
+
+        return new NumberValue(Math.pow(args[0].value, args[1].value))
+    }))
+
+    env.declareVar("abs", new NativeFunctionValue((args) => {
+        if (args[0].type != "Number") {
+            console.log(`Error: abs function requires number`)
+            process.exit(1)
+        }
+
+        return new NumberValue(Math.abs(args[0].value))
+    }))
 
     return env;
 }
