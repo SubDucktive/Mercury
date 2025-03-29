@@ -19,7 +19,7 @@ if (process.argv.length - 2 == 0) {
 
     let ast = parser.parse()
 
-    //console.log(JSON.stringify(ast, null, 4))
+    console.log(JSON.stringify(ast, null, 4))
 
     let env = CreateGlobalEnv()
 

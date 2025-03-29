@@ -48,6 +48,11 @@ const TokenType = {
 
     not: "not",
 
+    // logical operators
+
+    and: "and",
+    or: "or",
+
     //keywords
 
     _let: "let",
@@ -58,6 +63,7 @@ const TokenType = {
     _while: "while",
     _func: "func",
     _return: "return",
+    _import: "import",
 
     _null: "null",
     //eof
@@ -164,6 +170,12 @@ class Lexer {
                 } else {
                     this.tokens.push(new Token(TokenType.not, "!"))
                 }
+            } else if (this.peek() == "&" && this.peek(1) == "&") {
+                this.eat(); this.eat()
+                this.tokens.push(new Token(TokenType.and, "&&"))
+            } else if (this.peek() == "|" && this.peek(1) == "|") {
+                this.eat(); this.eat()
+                this.tokens.push(new Token(TokenType.or, "||"))
             }
             
             else if (this.peek() == "\"") {
@@ -254,6 +266,10 @@ class Lexer {
 
                     case "null":
                         this.tokens.push(new Token(TokenType._null, symbol))
+                        break
+                    
+                    case "import":
+                        this.tokens.push(new Token(TokenType._import, symbol))
                         break
 
                     default:

@@ -87,6 +87,10 @@ function evaluate(node, env, inFunction=false) {
                     result = Number(lhs.value == rhs.value)
                 } else if (node.op == "!=") {
                     result = Number(lhs.value != rhs.value)
+                } else if (node.op == "&&") {
+                    result = Number(lhs.value && rhs.value)
+                } else if (node.op == "||") {
+                    result = Number(lhs.value || rhs.value)
                 }
 
                 return new NumberValue(result)

@@ -16,7 +16,8 @@ const {
     CallExpression,
     FunctionDeclaration,
     ReturnStatement,
-    NullLiteral
+    NullLiteral,
+    ImportStatement
 } = require("./ast")
 const { Lexer, TokenType } = require("./lexer")
 
@@ -54,7 +55,7 @@ class Parser {
         let lexer = new Lexer(this.src)
         this.tokens = lexer.tokenize()
 
-        //clconsole.log(this.tokens)
+        console.log(this.tokens)
 
         let program = new Program()
 
@@ -207,6 +208,16 @@ class Parser {
         return new ReturnStatement(argument)
     }
 
+    parseImportStatement() {
+        this.eat()
+
+        let filename = this.expect(TokenType.identifier).value + ".mc"
+
+        this.expect(TokenType.semi)
+
+        return new ImportStatement(filename)
+    }
+
     parseStatement() {
         switch (this.peek().type) {
             case TokenType._let:
@@ -233,6 +244,9 @@ class Parser {
             case TokenType._return:
                 return this.parseReturnStatement()
 
+            case TokenType._import:
+                return this.parseImportStatement()
+
             
             default: {
                 let expr = this.parseExpression()
@@ -247,7 +261,7 @@ class Parser {
     }
 
     parseAssignment() {
-        let left = this.parseComparison()
+        let left = this.parseAnd()
 
         if (this.peek().type == TokenType.equals) {
             this.eat()
@@ -256,6 +270,30 @@ class Parser {
         }
 
         return left
+    }
+
+    parseAnd() {
+        let left = this.parseOr()
+
+        while (this.peek().type == TokenType.and) {
+            let operator = this.eat().value
+            let right = this.parseOr()
+            left = new BinaryExpression(operator, left, right)
+        }
+
+        return left;
+    }
+
+    parseOr() {
+        let left = this.parseComparison()
+
+        while (this.peek().type == TokenType.or) {
+            let operator = this.eat().value
+            let right = this.parseComparison()
+            left = new BinaryExpression(operator, left, right)
+        }
+
+        return left;
     }
 
     parseComparison() {

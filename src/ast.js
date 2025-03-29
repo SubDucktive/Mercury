@@ -82,12 +82,21 @@ class FunctionDeclaration extends Statement {
     }
 }
 
-class ReturnStatement extends Statement{
+class ReturnStatement extends Statement {
     constructor(argument) {
         super()
         this.type = "ReturnStatement"
 
         this.argument = argument
+    }
+}
+
+class ImportStatement extends Statement {
+    constructor(filename) {
+        super()
+        this.type = "ImportStatement"
+
+        this.filename = filename
     }
 }
 
@@ -210,5 +219,6 @@ module.exports = {
     ReturnStatement,
     ArrayExpression,
     MemberExpression,
-    CallExpression
+    CallExpression,
+    ImportStatement
 }
