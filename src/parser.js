@@ -46,7 +46,7 @@ class Parser {
     expect(type) {
         let token = this.eat()
         if (token.type != type) {
-            console.log(this.index)
+            //console.log(this.index)
             console.log(`ERROR: Expected token: ${type} after ${this.tokens[this.index - 2].type}: ${this.tokens[this.index - 2].value}`)
             process.exit(1)
         }
