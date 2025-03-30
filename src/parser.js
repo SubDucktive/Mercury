@@ -57,7 +57,7 @@ class Parser {
         let lexer = new Lexer(this.src)
         this.tokens = lexer.tokenize()
 
-        console.log(this.tokens)
+        //console.log(this.tokens)
 
         let program = new Program()
 
