@@ -166,7 +166,7 @@ function evaluate(node, env, inFunction=false) {
 
         case "IfStatement": {
             let result;
-            if (evaluate(node.test, env).value) {
+            if (evaluate(node.test, env, inFunction)?.value) {
                 result = evaluate(node.consequent, env, inFunction)
             } else if (node.alternate) {
                 result = evaluate(node.alternate, env, inFunction)
@@ -176,7 +176,7 @@ function evaluate(node, env, inFunction=false) {
         }
 
         case "WhileStatement": {
-            while (evaluate(node.test, env, inFunction).value) {
+            while (evaluate(node.test, env, inFunction)?.value) {
                 evaluate(node.body, env, inFunction)
             }
             break
@@ -303,6 +303,15 @@ function evaluate(node, env, inFunction=false) {
                 invalidReturn()
             }
             throw new ReturnValue(evaluate(node.argument, env))
+        }
+
+        case "ForStatement": {
+            evaluate(node.init, env, inFunction)
+            while (evaluate(node.test, env, inFunction)?.value) {
+                evaluate(node.body, env, inFunction)
+                evaluate(node.update, env, inFunction)
+            }
+            break;
         }
 
         default:

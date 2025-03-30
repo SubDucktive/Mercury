@@ -17,7 +17,8 @@ const {
     FunctionDeclaration,
     ReturnStatement,
     NullLiteral,
-    ImportStatement
+    ImportStatement,
+    ForStatement
 } = require("./ast")
 const { Lexer, TokenType } = require("./lexer")
 
@@ -34,8 +35,8 @@ class Parser {
         return token
     }
 
-    peek() {
-        return this.tokens[this.index]
+    peek(ahead = 0) {
+        return this.tokens[this.index + ahead]
     }
 
     atEnd() {
@@ -45,6 +46,7 @@ class Parser {
     expect(type) {
         let token = this.eat()
         if (token.type != type) {
+            console.log(this.index)
             console.log(`ERROR: Expected token: ${type} after ${this.tokens[this.index - 2].type}: ${this.tokens[this.index - 2].value}`)
             process.exit(1)
         }
@@ -218,6 +220,26 @@ class Parser {
         return new ImportStatement(filename)
     }
 
+    parseForStatement() {
+        this.eat()
+        this.expect(TokenType.leftParen)
+
+        let init = this.parseStatement()
+        
+        if (this.peek(-1).type != TokenType.semi) {
+            this.expect(TokenType.semi)
+        }
+
+        let test = this.parseExpression()
+        this.expect(TokenType.semi)
+        let update = this.parseExpression()
+        this.expect(TokenType.rightParen)
+
+        let body = this.parseBlockStatement()
+
+        return new ForStatement(init, test, update, body)
+    }
+
     parseStatement() {
         switch (this.peek().type) {
             case TokenType._let:
@@ -246,6 +268,9 @@ class Parser {
 
             case TokenType._import:
                 return this.parseImportStatement()
+            
+            case TokenType._for:
+                return this.parseForStatement()
 
             
             default: {

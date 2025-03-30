@@ -64,6 +64,7 @@ const TokenType = {
     _func: "func",
     _return: "return",
     _import: "import",
+    _for: "for",
 
     _null: "null",
     //eof
@@ -271,6 +272,10 @@ class Lexer {
                     case "import":
                         this.tokens.push(new Token(TokenType._import, symbol))
                         break
+
+                    case "for":
+                        this.tokens.push(new Token(TokenType._for, symbol))
+                        break;
 
                     default:
                         this.tokens.push(new Token(TokenType.identifier, symbol))

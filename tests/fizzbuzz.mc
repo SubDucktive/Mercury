@@ -1,6 +1,5 @@
 func fizzbuzz(count) {
-    let i = 1;
-    while (i <= count) {
+    for (let i = 1; i <= count; i = i + 1) {
         if (i % 15 == 0) {
             print "FizzBuzz";
         } else if (i % 3 == 0) {
@@ -10,8 +9,6 @@ func fizzbuzz(count) {
         } else {
             print i;
         }
-
-        i = i + 1;
     }
 }
 

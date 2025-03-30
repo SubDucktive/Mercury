@@ -100,6 +100,18 @@ class ImportStatement extends Statement {
     }
 }
 
+class ForStatement extends Statement {
+    constructor(init, test, update, body) {
+        super()
+        this.type = "ForStatement"
+
+        this.init = init
+        this.test = test
+        this.update = update
+        this.body = body
+    }
+}
+
 // Expressions
 
 class Expression extends AstNode {
@@ -220,5 +232,6 @@ module.exports = {
     ArrayExpression,
     MemberExpression,
     CallExpression,
-    ImportStatement
+    ImportStatement,
+    ForStatement
 }
