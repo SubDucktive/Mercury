@@ -269,7 +269,7 @@ function evaluate(node, env, inFunction=false) {
                 // Assign the arguments to the parameters in the function's environment
                 for (let i = 0; i < callee.params.length; i++) {
                     const param = callee.params[i]
-                    funcEnv.declareVar(param.symbol, args[i], "const")
+                    funcEnv.declareVar(param.symbol, args[i], "let")
                 }
         
                 // Now evaluate the function body using the new scope
